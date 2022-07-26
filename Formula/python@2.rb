@@ -6,6 +6,8 @@ class PythonAT2 < Formula
   revision 1
   head "https://github.com/python/cpython.git", branch: "2.7"
 
+  patch :DATA
+
   # setuptools remembers the build flags python is built with and uses them to
   # build packages later. Xcode-only systems need different flags.
   pour_bottle? do
@@ -22,6 +24,7 @@ class PythonAT2 < Formula
   depends_on "openssl@1.1"
   depends_on "readline"
   depends_on "sqlite"
+  depends_on "libffi"
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/f4/d5/a6c19dcbcbc267aca376558797f036d9bcdff344c9f785fe7d0fe9a5f2a7/setuptools-41.4.0.zip"
@@ -29,8 +32,8 @@ class PythonAT2 < Formula
   end
 
   resource "pip" do
-    url "https://files.pythonhosted.org/packages/ce/ea/9b445176a65ae4ba22dce1d93e4b5fe182f953df71a145f557cffaffc1bf/pip-19.3.1.tar.gz"
-    sha256 "21207d76c1031e517668898a6b46a9fb1501c7a4710ef5dfd6a40ad9e6757ea7"
+    url "https://files.pythonhosted.org/packages/00/9e/4c83a0950d8bdec0b4ca72afd2f9cea92d08eb7c1a768363f2ea458d08b4/pip-19.2.3.tar.gz"
+    sha256 "e7a31f147974362e6c82d84b91c7f2bdf57e4d3163d3d454e6c3e71944d67135"
   end
 
   resource "wheel" do
@@ -64,6 +67,7 @@ class PythonAT2 < Formula
       --datadir=#{share}
       --enable-framework=#{frameworks}
       --without-ensurepip
+      --with-system-ffi
     ]
 
     # See upstream bug report from 22 Jan 2018 "Significant performance problems
@@ -93,7 +97,7 @@ class PythonAT2 < Formula
     end
 
     # Avoid linking to libgcc https://code.activestate.com/lists/python-dev/112195/
-    args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
+    args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}.0"
 
     # We want our readline and openssl! This is just to outsmart the detection code,
     # superenv handles that cc finds includes/libs!
@@ -230,6 +234,8 @@ class PythonAT2 < Formula
       include_dirs=#{include_dirs.join ":"}
       library_dirs=#{library_dirs.join ":"}
     EOS
+
+    system "#{bin}/python", "-m", "pip", "install", "--upgrade", "pip"
   end
 
   def sitecustomize
@@ -308,3 +314,75 @@ class PythonAT2 < Formula
     system bin/"pip", "list", "--format=columns"
   end
 end
+
+__END__
+diff --git a/Mac/Tools/pythonw.c b/Mac/Tools/pythonw.c
+index 76734c1063..3a4dc849a5 100644
+--- a/Mac/Tools/pythonw.c
++++ b/Mac/Tools/pythonw.c
+@@ -118,6 +118,8 @@ setup_spawnattr(posix_spawnattr_t* spawnattr)
+     cpu_types[0] = CPU_TYPE_POWERPC;
+ #elif defined(__i386__)
+     cpu_types[0] = CPU_TYPE_X86;
++#elif defined(__arm64__)
++    cpu_types[0] = CPU_TYPE_ARM64;
+ #else
+ #       error "Unknown CPU"
+ #endif
+diff --git a/Modules/_ctypes/malloc_closure.c b/Modules/_ctypes/malloc_closure.c
+index 248c6a6702..de52d1c8da 100644
+--- a/Modules/_ctypes/malloc_closure.c
++++ b/Modules/_ctypes/malloc_closure.c
+@@ -86,26 +86,4 @@ static void more_core(void)
+     }
+ }
+ 
+-/******************************************************************/
+-
+-/* put the item back into the free list */
+-void ffi_closure_free(void *p)
+-{
+-    ITEM *item = (ITEM *)p;
+-    item->next = free_list;
+-    free_list = item;
+-}
+-
+-/* return one item from the free list, allocating more if needed */
+-void *ffi_closure_alloc(size_t ignored, void** codeloc)
+-{
+-    ITEM *item;
+-    if (!free_list)
+-        more_core();
+-    if (!free_list)
+-        return NULL;
+-    item = free_list;
+-    free_list = item->next;
+-    *codeloc = (void *)item;
+-    return (void *)item;
+-}
++/******************************************************************/
+\ No newline at end of file
+diff --git a/configure b/configure
+index 63d675312d..91edb85f29 100755
+--- a/configure
++++ b/configure
+@@ -8462,6 +8462,9 @@ fi
+     	ppc)
+     		MACOSX_DEFAULT_ARCH="ppc"
+     		;;
++    	arm64)
++    		MACOSX_DEFAULT_ARCH="arm64"
++    		;;
+     	*)
+     		as_fn_error $? "Unexpected output of 'arch' on OSX" "$LINENO" 5
+     		;;
+@@ -8474,6 +8477,9 @@ fi
+     	ppc)
+     		MACOSX_DEFAULT_ARCH="ppc64"
+     		;;
++    	arm64)
++    		MACOSX_DEFAULT_ARCH="arm64"
++    		;;
+     	*)
+     		as_fn_error $? "Unexpected output of 'arch' on OSX" "$LINENO" 5
+     		;;
