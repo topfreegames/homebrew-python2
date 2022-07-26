@@ -1,8 +1,8 @@
-# Topfreegames Python2
+# Python@2 Homebrew Tap
 
 ## How do I install these formulae?
 
-`brew install topfreegames/python2/<formula>`
+`brew install topfreegames/python2/python@2`
 
 Or `brew tap topfreegames/python2` and then `brew install <formula>`.
 
