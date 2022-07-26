@@ -234,8 +234,6 @@ class PythonAT2 < Formula
       include_dirs=#{include_dirs.join ":"}
       library_dirs=#{library_dirs.join ":"}
     EOS
-
-    system "#{bin}/python", "-m", "pip", "install", "--upgrade", "pip"
   end
 
   def sitecustomize
