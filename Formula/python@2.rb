@@ -6,8 +6,6 @@ class PythonAT2 < Formula
   revision 1
   head "https://github.com/python/cpython.git", branch: "2.7"
 
-  patch :DATA
-
   # setuptools remembers the build flags python is built with and uses them to
   # build packages later. Xcode-only systems need different flags.
   pour_bottle? do
@@ -21,10 +19,10 @@ class PythonAT2 < Formula
 
   depends_on "pkg-config" => :build
   depends_on "gdbm"
+  depends_on "libffi"
   depends_on "openssl@1.1"
   depends_on "readline"
   depends_on "sqlite"
-  depends_on "libffi"
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/f4/d5/a6c19dcbcbc267aca376558797f036d9bcdff344c9f785fe7d0fe9a5f2a7/setuptools-41.4.0.zip"
@@ -40,6 +38,8 @@ class PythonAT2 < Formula
     url "https://files.pythonhosted.org/packages/59/b0/11710a598e1e148fb7cbf9220fd2a0b82c98e94efbdecb299cb25e7f0b39/wheel-0.33.6.tar.gz"
     sha256 "10c9da68765315ed98850f8e048347c3eb06dd81822dc2ab1d4fde9dc9702646"
   end
+
+  patch :DATA
 
   def lib_cellar
     prefix/"Frameworks/Python.framework/Versions/2.7/lib/python2.7"
