@@ -4,7 +4,7 @@
 
 `brew install topfreegames/python2/python@2`
 
-Or `brew tap topfreegames/python2` and then `brew install <formula>`.
+Or `brew tap topfreegames/python2` and then `brew install python@2`.
 
 ## Documentation
 
