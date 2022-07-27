@@ -6,6 +6,11 @@ class PythonAT2 < Formula
   revision 2
   head "https://github.com/python/cpython.git", branch: "2.7"
 
+  bottle do
+    root_url "https://github.com/topfreegames/homebrew-python2/releases/download/python@2-2.7.18_2"
+    sha256 big_sur: "816739500d0c9e1430ccae1651b177dbc899b23cfdadc69bd15680da2c338c52"
+  end
+
   # setuptools remembers the build flags python is built with and uses them to
   # build packages later. Xcode-only systems need different flags.
   pour_bottle? do
