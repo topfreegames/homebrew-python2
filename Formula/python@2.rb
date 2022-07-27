@@ -7,8 +7,9 @@ class PythonAT2 < Formula
   head "https://github.com/python/cpython.git", branch: "2.7"
 
   bottle do
-    root_url "https://github.com/topfreegames/homebrew-python2/releases/download/python@2-2.7.18_2"
-    sha256 big_sur: "816739500d0c9e1430ccae1651b177dbc899b23cfdadc69bd15680da2c338c52"
+    root_url "https://github.com/topfreegames/homebrew-python2/releases/download/python@2-2.7.18_4"
+    sha256 monterey: "ebd2c68015692c4b7c4b90665752be6050953f6519111c366c6abeb6e05daacb"
+    sha256 big_sur:  "39c4eab9460e43a7d00c9fc7721d128644fc3afd417fc140876a5a98c5dfe11f"
   end
 
   # setuptools remembers the build flags python is built with and uses them to
