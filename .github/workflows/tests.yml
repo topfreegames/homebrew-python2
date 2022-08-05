@@ -11,6 +11,8 @@ jobs:
         os: [macos-11, macos-12]
     runs-on: ${{ matrix.os }}
     steps:
+      - run:  env
+      
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master

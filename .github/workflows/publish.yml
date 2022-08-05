@@ -8,6 +8,8 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
     runs-on: ubuntu-latest
     steps:
+      - run:  env
+      
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
